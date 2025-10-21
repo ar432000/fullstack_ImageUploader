@@ -173,9 +173,9 @@ export default function Gallery() {
             ))}
         </div>
       ) : (
-        <div className=" bg-amber-200 m-auto w-100 h-20 text-center text-gray-500 text-xl mt-10">
-          Oops! Looks Like Images did not load. This could be due to Network
-          Issue or Servie is down.
+        <div className=" bg-amber-200 p-2 m-auto w-150 h-auto text-center text-gray-500 text-xl mt-10 rounded-[10px]">
+          Oops! Looks like images did not load. This could be due to network
+          issue or backend server is down or connection interrupted.
         </div>
       )}
 
@@ -194,7 +194,7 @@ export default function Gallery() {
       {/* Initially we were showing just image while clicking the view buttton but now we are going to implement corousel feature */}
 
       {selectedIndex !== null && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-60">
           {/* close button */}
           <button
             className="absolute top-4 right-4 text-white text-4xl font-bold hover:text-red-400"
