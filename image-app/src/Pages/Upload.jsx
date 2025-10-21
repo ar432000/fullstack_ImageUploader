@@ -43,21 +43,22 @@ export default function Upload() {
         ref={fileInputRef}
         accept="image/*"
         onChange={handleFileChange}
+        className="border-2 border-black rounded-[10px] px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300"
       />
 
       {preview && (
-        <div className="mt-4">
+        <div className="mt-4 border-2 border-solid rounded-[15px]">
           <img
             src={preview}
             alt="Preview"
-            className="w-64 h-64 object-cover rounded shadow"
+            className="w-64 h-64 object-cover rounded-[15px] shadow"
           />
         </div>
       )}
 
       <button
         onClick={handleUpload}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        className="align-middle px-4 py-2 bg-blue-500 text-white rounded-[10px] hover:bg-blue-600"
       >
         Upload
       </button>

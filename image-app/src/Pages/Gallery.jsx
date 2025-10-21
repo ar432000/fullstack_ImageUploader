@@ -5,6 +5,7 @@ export default function Gallery() {
   const [images, setImages] = useState([]);
   // const [selectedImage, setSelectedImage] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // this method will handle the view button functionality
   const handleView = (index) => {
@@ -25,6 +26,7 @@ export default function Gallery() {
   };
   const fetchImages = async () => {
     try {
+      setIsLoading(true);
       const response = await axios.get(
         "http://localhost:5164/api/Image/getImages"
       );
@@ -47,6 +49,8 @@ export default function Gallery() {
 
   useEffect(() => {
     fetchImages();
+    let interval = setTimeout(() => setIsLoading(false), 3000);
+    return () => clearTimeout(interval);
   }, []);
 
   // one more useEffect to handle keyboard navigation for corousel
@@ -74,44 +78,90 @@ export default function Gallery() {
 
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [selectedIndex, images.length]);
-
+  if (isLoading)
+    return (
+      <div
+        className="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+      >
+        <div className="bg-white/95 dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg shadow-lg px-6 py-4 flex items-center gap-4 max-w-md mx-4">
+          <svg
+            className="w-5 h-5 animate-spin text-indigo-600"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+            ></path>
+          </svg>
+          <div>
+            <div className="text-lg font-medium">Please wait.</div>
+            <div className="text-sm text-gray-600 dark:text-gray-300">
+              We are working to fetch images data.
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   return (
-    <div className="p-6">
+    <div className="p-6 pb-28">
+      {/* extra bottom padding to avoid footer overlap */}
       <h2 className="text-2xl font-bold mb-4">Image Gallery</h2>
 
-      <div className="grid grid-cols-3 gap-6">
-        {images &&
-          images.map((image, index) => (
-            <div
-              key={image.id}
-              className="p-4 border rounded shadow flex flex-col items-center"
-            >
-              <img
-                src={`http://localhost:5164/api/Image/getImage/${image.id}`}
-                alt={image.fileName}
-                className="w-48 h-40 object-cover rounded mb-2"
-              />
+      {images && images.length > 0 ? (
+        <div className="grid grid-cols-3 gap-6">
+          {images &&
+            images.map((image, index) => (
+              <div
+                key={image.id}
+                className="p-4 border rounded shadow flex flex-col items-center"
+              >
+                <img
+                  src={`http://localhost:5164/api/Image/getImage/${image.id}`}
+                  alt={image.fileName}
+                  className="w-48 h-40 object-cover rounded mb-2"
+                />
 
-              <p className="text-sm">{image.FileName}</p>
+                <p className="text-sm">{image.FileName}</p>
 
-              <div className="flex gap-2 mt-2">
-                <button
-                  onClick={() => handleView(index)}
-                  className="px-3 py-1 bg-red-500 text-white rounded"
-                >
-                  View
-                </button>
+                <div className="flex gap-2 mt-2">
+                  <button
+                    onClick={() => handleView(index)}
+                    className="px-3 py-1 bg-red-500 text-white rounded"
+                  >
+                    View
+                  </button>
 
-                <button
-                  onClick={() => handleDelete(image.id)}
-                  className="px-3 py-1 bg-red-500 text-white rounded"
-                >
-                  Delete
-                </button>
+                  <button
+                    onClick={() => handleDelete(image.id)}
+                    className="px-3 py-1 bg-red-500 text-white rounded"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-      </div>
+            ))}
+        </div>
+      ) : (
+        <div className=" bg-amber-200 m-auto w-100 h-20 text-center text-gray-500 text-xl mt-10">
+          Oops! Looks Like Images did not load. This could be due to Network
+          Issue or Servie is down.
+        </div>
+      )}
 
       {/* {selectedImage && (
         <div
@@ -166,6 +216,15 @@ export default function Gallery() {
           </button>
         </div>
       )}
+      {/* fixed footer */}
+      <footer className="fixed left-0 right-0 bottom-0 bg-white/90 dark:bg-gray-900/100 border-t border-gray-200 dark:border-gray-400 py-3 px-6 flex items-center justify-between z-50">
+        <div className="text-sm text-gray-700 dark:text-gray-300">
+          © {new Date().getFullYear()} My Image App
+        </div>
+        <div className="text-sm text-gray-600 dark:text-gray-400">
+          Made with ❤️
+        </div>
+      </footer>
     </div>
   );
 }
