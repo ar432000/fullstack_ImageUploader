@@ -78,6 +78,22 @@ export default function Gallery() {
 
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [selectedIndex, images.length]);
+
+  // disable body scroll when modal (selectedIndex) is open
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+
+    if (selectedIndex !== null) {
+      // store current overflow to restore later if needed
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [selectedIndex]);
   if (isLoading)
     return (
       <div
